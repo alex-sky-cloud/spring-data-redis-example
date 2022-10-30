@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  redis:
+    image: redis
+    container_name: redis
+    restart: always
+    volumes:
+      - //projects/spring-data-redis-example/src/main/resources/docker/redis/storage:/opt/redis/data/bases
+      - //projects/spring-data-redis-example/src/main/resources/docker/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - //projects/spring-data-redis-example/src/main/resources/docker/redis/log/redis-server.log:/opt/redis/logs/redis-server.log
+    ports:
+      - 6379:6379
+
+  phpredisadmin:
+    image: erikdubbelboer/phpredisadmin
+    container_name: redis-manager
+    restart: always
+    depends_on:
+      - redis
+    environment:
+      #ADMIN_USER: admin
+      #ADMIN_PASS: admin
+      REDIS_1_HOST: 192.168.99.100
+      REDIS_1_PORT: 6379
+    links:
+      - redis
+    ports:
+      - "8085:80"
